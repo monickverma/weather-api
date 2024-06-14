@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <form id="weatherForm">
+      <h3>Weather API</h3>
+
+      <label>City name:</label>
+      <input type="text" id="whatcity" />
+      <div class="weather">
+        <p class="side-chick">temperature:</p>
+        <h1 id="weather"></h1>
+      </div>
+      <div class="city">
+        <p class="side-chick">city:</p>
+        <h1 id="city"></h1>
+      </div>
+      <div class="more">
+        <p class="side-chick">humidity:</p>
+        <p id="humidity"></p>
+      </div>
+      <div class="wind">
+        <p class="side-chick">wind:</p>
+        <p id="wind"></p>
+      </div>
+      <input type="submit" id="btn" value="Search" name="submit" />
+    </form>
+
+    <script>
+      const apiKey = "b36025daed781202686dba1ac309370b";
+
+      document
+        .getElementById("weatherForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent form from submitting the traditional way
+          const city = document.getElementById("whatcity").value;
+          const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+
+          fetch(apiUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("City not found");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              const weatherDiv = document.getElementById("weather");
+              const cityname = document.getElementById("city");
+              const windname = document.getElementById("wind");
+              const humidname = document.getElementById("humidity");
+              const temp = data.main.temp - 273.15;
+
+              weatherDiv.innerHTML = `${temp.toFixed(2)}°C`;
+              cityname.innerHTML = `${data.name}`;
+              windname.innerHTML = `${data.wind.speed} km/h`;
+              humidname.innerHTML = `${data.main.humidity}%`;
+            })
+            .catch((error) => {
+              console.error("Error fetching the weather data:", error);
+            });
+        });
+    </script>
+  </body>
+</html>
